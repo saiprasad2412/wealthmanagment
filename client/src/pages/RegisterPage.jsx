@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { registerFn } from "../services/userServices"; // Assume this function handles the registration API call
+import { registerFn } from "../services/userServices"; 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -123,7 +123,8 @@ const RegisterPage = () => {
           )}
         </Formik>
       </div>
-      <ToastContainer />
+      <ToastContainer position="bottom-center" />
+
     </div>
   );
 };

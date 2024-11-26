@@ -35,7 +35,7 @@ const loginController=async(req,res)=>{
             httpOnly:true,
             secure:true
         }
-
+        
         return res.status(200).cookie("accessToken",accessToken,options).json({
             success:true,
             message:"User logged in successfully",

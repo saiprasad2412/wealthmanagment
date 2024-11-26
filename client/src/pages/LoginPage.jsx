@@ -20,20 +20,17 @@ const LoginPage = () => {
     console.log('Values:', values);
 
     try {
-      // Make the login API request
-      const res = await loginFn(values); // Assuming loginFn returns a response
+      const res = await loginFn(values);
 
       console.log('Response:', res);
 
-      // Handle successful login
       if (res.success) {
-        toast.success("Login successful!");
         console.log('user',res.user);
         
         localStorage.setItem('user',JSON.stringify(res.user))
+        toast.success("Login successful!")
         navigate('/')
 
-        // Redirect or perform further actions
       } else {
         setError(res.message || "Something went wrong");
         toast.error(res.message || "Invalid credentials");
@@ -114,10 +111,12 @@ const LoginPage = () => {
             </Form>
           )}
         </Formik>
+        <button onClick={() => toast.success("This is a test!")}>
+        Show Toast
+      </button>
       </div>
 
-      {/* Toast Notification Container */}
-      <ToastContainer />
+      <ToastContainer position="bottom-center" />
     </div>
   );
 };
