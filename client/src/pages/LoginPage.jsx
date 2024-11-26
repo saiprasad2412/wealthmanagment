@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { loginFn } from "../services/userServices"; // Assuming loginFn is a function to call your API
@@ -41,6 +41,10 @@ const LoginPage = () => {
       toast.error("An error occurred while logging in");
     }
   };
+   //check if user already present in localstorage 
+   useEffect(()=>{
+    if(localStorage.getItem('user')){navigate('/')};
+  },[navigate])
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
@@ -111,9 +115,6 @@ const LoginPage = () => {
             </Form>
           )}
         </Formik>
-        <button onClick={() => toast.success("This is a test!")}>
-        Show Toast
-      </button>
       </div>
 
       <ToastContainer position="bottom-center" />

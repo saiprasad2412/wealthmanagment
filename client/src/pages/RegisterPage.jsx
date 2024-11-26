@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { registerFn } from "../services/userServices"; 
@@ -36,6 +36,10 @@ const RegisterPage = () => {
       toast.error("An error occurred while registering");
     }
   };
+  //check if user already present in localstorage 
+  useEffect(()=>{
+    if(localStorage.getItem('user')){navigate('/')};
+  },[navigate])
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-green-500 to-blue-600">
