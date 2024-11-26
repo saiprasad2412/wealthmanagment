@@ -11,7 +11,7 @@ const App = () => {
       <Route path='/' element={<ProtectedRoutes><Homepage/></ProtectedRoutes>}/>
       <Route path='/login' element={<LoginPage/>}/>
       <Route path='/register' element={<RegisterPage/>}/>
-      <Route path='/view-reports' element={<ViewReport/>}/>
+      <Route path='/view-reports' element={<ProtectedRoutes><ViewReport/></ProtectedRoutes>}/>
 
 
 

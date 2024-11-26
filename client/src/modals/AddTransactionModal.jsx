@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { addTransactionFn } from "../services/transactionServices";
 
 const AddTransactionModal = ({ isOpen, onClose }) => {
+  const [transactionType, setTransactionType] = useState("");
+
   if (!isOpen) return null;
+
+  const incomeCategories = ["Salary", "Freelancing", "Investments", "Others"];
+  const expenseCategories = ["Rent", "Groceries", "Entertainment", "Utilities", "Miscellaneous", "Others"];
 
   const validationSchema = Yup.object({
     amount: Yup.number()
@@ -13,15 +19,26 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
       .required("Amount is required"),
     category: Yup.string().required("Category is required"),
     type: Yup.string().oneOf(["income", "expense"], "Invalid transaction type").required("Type is required"),
+    description: Yup.string().required("Description is required"),
     date: Yup.date().required("Date is required"),
   });
 
   const handleAddTransaction = async (values, { resetForm }) => {
     try {
       console.log("Transaction Details:", values);
-      toast.success("Transaction added successfully!");
-      resetForm(); 
-      onClose();
+      const dd= addTransactionFn(values).then((res)=>{
+        console.log('ressss',res);
+        if(res.success){
+          toast.success("Transaction added successfully!");
+          resetForm();
+          onClose();
+
+        }
+        else{
+          toast.error("Failed to add transaction. Please try again.");
+        }
+      })
+      
     } catch (error) {
       console.error("Error adding transaction:", error);
       toast.error("Failed to add transaction. Please try again.");
@@ -36,14 +53,16 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
           initialValues={{
             amount: "",
             category: "",
+            description: "",
             type: "",
             date: "",
           }}
           validationSchema={validationSchema}
           onSubmit={handleAddTransaction}
         >
-          {({ isSubmitting }) => (
+          {({ isSubmitting, values }) => (
             <Form className="space-y-4">
+              {/* Amount */}
               <div>
                 <label htmlFor="amount" className="block text-gray-600">
                   Amount
@@ -54,24 +73,12 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                   name="amount"
                   className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                   placeholder="Enter amount"
+                  required={true}
                 />
                 <ErrorMessage name="amount" component="div" className="text-red-500 text-sm mt-1" />
               </div>
 
-              <div>
-                <label htmlFor="category" className="block text-gray-600">
-                  Category
-                </label>
-                <Field
-                  type="text"
-                  id="category"
-                  name="category"
-                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Enter category"
-                />
-                <ErrorMessage name="category" component="div" className="text-red-500 text-sm mt-1" />
-              </div>
-
+              {/* Type Dropdown */}
               <div>
                 <label htmlFor="type" className="block text-gray-600">
                   Type
@@ -81,12 +88,59 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
                   id="type"
                   name="type"
                   className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => {
+                    setTransactionType(e.target.value);
+                    values.type = e.target.value;
+                  }}
                 >
                   <option value="" label="Select type" />
                   <option value="income" label="Income" />
                   <option value="expense" label="Expense" />
                 </Field>
                 <ErrorMessage name="type" component="div" className="text-red-500 text-sm mt-1" />
+              </div>
+
+              {/* Category Dropdown */}
+              <div>
+                <label htmlFor="category" className="block text-gray-600">
+                  Category
+                </label>
+                <Field
+                  as="select"
+                  id="category"
+                  name="category"
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="" label="Select category" />
+                  {transactionType === "income" &&
+                    incomeCategories.map((cat, index) => (
+                      <option key={index} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                  {transactionType === "expense" &&
+                    expenseCategories.map((cat, index) => (
+                      <option key={index} value={cat}>
+                        {cat}
+                      </option>
+                    ))}
+                </Field>
+                <ErrorMessage name="category" component="div" className="text-red-500 text-sm mt-1" />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label htmlFor="description" className="block text-gray-600">
+                  Description
+                </label>
+                <Field
+                  type="text"
+                  id="description"
+                  name="description"
+                  className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Enter description"
+                />
+                <ErrorMessage name="description" component="div" className="text-red-500 text-sm mt-1" />
               </div>
 
               {/* Date */}

@@ -26,19 +26,19 @@ const Homepage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Total Savings */}
           <div className="bg-white shadow-lg p-6 rounded-lg text-center">
-            <h3 className="text-xl font-semibold mb-4 text-blue-500">Show Transactions</h3>
-            <p className="text-gray-600 text-lg">$15,000</p>
+            <h3 className="text-xl font-semibold mb-4 text-green-500">Total Income</h3>
+            <p className="text-green-600 text-lg">$15,000</p>
           </div>
 
           {/* Monthly Budget */}
           <div className="bg-white shadow-lg p-6 rounded-lg text-center">
-            <h3 className="text-xl font-semibold mb-4 text-green-500">Monthly Budget</h3>
-            <p className="text-gray-600 text-lg">$2,500</p>
+            <h3 className="text-xl font-semibold mb-4 text-red-500">Total Expense</h3>
+            <p className="text-red-600 text-lg">$2,500</p>
           </div>
 
           {/* Investments */}
           <div className="bg-white shadow-lg p-6 rounded-lg text-center">
-            <h3 className="text-xl font-semibold mb-4 text-indigo-500">Investments</h3>
+            <h3 className="text-xl font-semibold mb-4 text-indigo-500">Savings</h3>
             <p className="text-gray-600 text-lg">$8,000</p>
           </div>
         </div>
