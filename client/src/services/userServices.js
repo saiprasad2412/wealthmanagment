@@ -1,7 +1,7 @@
 import axios from 'axios'
 export const loginFn=async(payload)=>{
     try {
-        const res=await axios.post('http://localhost:8080/api/v2/auth/login',payload);
+        const res=await axios.post('http://localhost:8080/api/v1/auth/login',payload);
         return res.data;
         
     } catch (error) {
@@ -13,7 +13,7 @@ export const loginFn=async(payload)=>{
 
 export const registerFn=async(payload)=>{
     try {
-        const res=await axios.post('http://localhost:8080/api/v2/auth/register',payload);
+        const res=await axios.post('http://localhost:8080/api/v1/auth/register',payload);
         return res.data;
     } catch (error) {
         console.error("Error in loginFn:", error.response?.data || error.message);
