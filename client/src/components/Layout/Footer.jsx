@@ -1,7 +1,7 @@
 const Footer = () => {
     return (
       <footer className="bg-gray-800 text-white">
-        <div className="container mx-auto py-42px-2 flex flex-col md:flex-row justify-between items-center">
+        <div className="container mx-auto py-4 px-2 flex flex-col md:flex-row justify-between items-center">
           {/* Left Section - Logo or Text */}
           <div className="text-center md:text-left mb-2 md:mb-0">
             <span className="text-lg font-semibold">Wealth Managment</span>
