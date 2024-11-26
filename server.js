@@ -17,7 +17,9 @@ app.use(morgan('dev'));
 
 //routes
 const userRoutes=require('./routes/userRoutes.js')
-app.use("/api/v2/auth",userRoutes)
+const transactionRoutes=require('./routes/transactionRoutes.js')
+app.use("/api/v1/auth",userRoutes)
+app.use("/api/v1/transactions",transactionRoutes)
 app.get('/', (req,res)=>{
     res.send('hello')
 })
