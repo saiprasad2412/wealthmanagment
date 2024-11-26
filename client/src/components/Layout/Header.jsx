@@ -1,19 +1,50 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState, useRef } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const Header = () => {
-  // Simulate user authentication status and data
-  const [user, setUser] = useState(null); // Set to `{ name: "John Doe" }` for logged-in
+  const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  // Reference to the dropdown and profile icon to handle clicks outside
+  const dropdownRef = useRef(null);
+  const profileIconRef = useRef(null);
+
+  useEffect(() => {
+    const loc = localStorage.getItem('user');
+    setUser(JSON.parse(loc));
+  }, []);
+
+  // Handle clicks outside the dropdown to close it
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(event.target) &&
+        profileIconRef.current && !profileIconRef.current.contains(event.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    navigate('/login');
+  };
 
   return (
     <header className="bg-gray-800 text-white shadow-md">
-      <div className="container mx-auto flex justify-between items-center p-4">
-        {/* Logo */}
+      <div className="container mx-auto flex justify-between items-center p-2">
+      
         <div className="flex items-center">
-          <span className="text-2xl font-bold">Wealth Managment</span>
+          <span className="text-2xl font-bold">Wealth Management</span>
         </div>
 
-        {/* Navigation Links */}
+       
         <nav className="hidden md:flex space-x-6">
           <Link to="/" className="hover:text-gray-400">
             Home
@@ -24,24 +55,19 @@ const Header = () => {
           <Link to="/expense" className="hover:text-gray-400">
             Expenses
           </Link>
-          {/* <a href="#about" className="hover:text-gray-400">
-            About
-          </a>
-          <a href="#services" className="hover:text-gray-400">
-            Services
-          </a>
-          <a href="#contact" className="hover:text-gray-400">
-            Contact
-          </a> */}
         </nav>
 
-        {/* Right Side (Profile/Actions) */}
+        
         <div className="flex items-center space-x-4">
-          {/* Conditionally render user name or login button */}
+          
           {user ? (
-            <div className="flex items-center space-x-2">
-              {/* Profile Icon */}
-              <button className="bg-gray-700 p-2 rounded-full hover:bg-gray-600">
+            <div className="relative flex items-center space-x-2">
+              
+              <button
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                ref={profileIconRef}
+                className="bg-gray-700 p-2 rounded-full hover:bg-gray-600"
+              >
                 <span className="sr-only">Open user menu</span>
                 <svg
                   className="w-6 h-6"
@@ -54,13 +80,30 @@ const Header = () => {
                   />
                 </svg>
               </button>
-              {/* User Name */}
+              
               <span>{user.name}</span>
+
+              
+              {dropdownOpen && (
+                <div
+                  ref={dropdownRef}
+                  className="absolute right-0 mt-2 w-48 bg-white text-gray-800 rounded-lg shadow-lg"
+                >
+                  <button
+                    onClick={handleLogout}
+                    className="w-full text-left px-4 py-2 hover:bg-gray-200"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
-            // Login Button
+            
             <button
-              onClick={() => setUser({ name: "John Doe" })} // Simulate login
+              onClick={() => {
+                navigate('/login');
+              }} 
               className="bg-blue-600 px-4 py-2 rounded hover:bg-blue-500"
             >
               Login
@@ -68,7 +111,7 @@ const Header = () => {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
+        
         <div className="md:hidden">
           <button className="text-white hover:text-gray-400 focus:outline-none">
             <svg
