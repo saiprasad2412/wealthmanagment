@@ -8,7 +8,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [error, setError] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   // Yup validation schema
   const validationSchema = Yup.object({
@@ -25,9 +25,9 @@ const LoginPage = () => {
       console.log('Response:', res);
 
       if (res.success) {
-        console.log('user',res.user);
-        
-        localStorage.setItem('user',JSON.stringify(res.user))
+        console.log('user', res.user);
+
+        localStorage.setItem('user', JSON.stringify(res.user))
         toast.success("Login successful!")
         navigate('/')
 
@@ -41,10 +41,11 @@ const LoginPage = () => {
       toast.error("An error occurred while logging in");
     }
   };
-   //check if user already present in localstorage 
-   useEffect(()=>{
-    if(localStorage.getItem('user')){navigate('/')};
-  },[navigate])
+
+  // Check if user is already logged in
+  useEffect(() => {
+    if (localStorage.getItem('user')) { navigate('/') };
+  }, [navigate]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-500 to-indigo-600">
@@ -95,10 +96,10 @@ const LoginPage = () => {
               </div>
 
               <div className="flex items-center justify-between">
-              <Link  to="/register" className="text-sm text-blue-600 hover:text-blue-800 text-wrap mr-2">
-                  Don't have account ? 
+                <Link to="/register" className="text-sm text-blue-600 hover:text-blue-800 text-wrap mr-2">
+                  Don't have an account? 
                 </Link>
-                <Link  to="#" className="text-sm text-blue-600 hover:text-blue-800">
+                <Link to="#" className="text-sm text-blue-600 hover:text-blue-800">
                   Forgot password?
                 </Link>
               </div>
@@ -117,7 +118,19 @@ const LoginPage = () => {
         </Formik>
       </div>
 
-      <ToastContainer position="bottom-center" />
+      {/* ToastContainer with z-index set high to ensure visibility */}
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        className="z-50"
+      />
     </div>
   );
 };

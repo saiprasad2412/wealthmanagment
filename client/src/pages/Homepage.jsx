@@ -71,19 +71,19 @@ const Homepage = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Total Income */}
-          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center">
+          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center border border-indigo-500 m-2">
             <h3 className="text-xl font-semibold mb-4 text-green-500">Total Income</h3>
             <p className="text-green-600 text-2xl font-semibold">Rs.{income.toFixed(2)}</p>
           </div>
 
           {/* Total Expense */}
-          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center">
+          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center border border-indigo-500 m-2">
             <h3 className="text-xl font-semibold mb-4 text-red-500">Total Expense</h3>
             <p className="text-red-600 text-2xl font-semibold">Rs.{expense.toFixed(2)}</p>
           </div>
 
           {/* Savings */}
-          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center">
+          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center border border-indigo-500 m-2">
             <h3 className="text-xl font-semibold mb-4 text-indigo-500">Savings</h3>
             <p
               className={`text-2xl font-semibold ${savings >= 0 ? "text-green-600" : "text-red-600"}`}
