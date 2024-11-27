@@ -4,6 +4,8 @@ import Homepage from './pages/Homepage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import ViewReport from './pages/ViewReport'
+import ContactUs from './pages/ContactUs'
+import About from './pages/About'
 const App = () => {
   return (
     <>
@@ -11,6 +13,9 @@ const App = () => {
       <Route path='/' element={<ProtectedRoutes><Homepage/></ProtectedRoutes>}/>
       <Route path='/login' element={<LoginPage/>}/>
       <Route path='/register' element={<RegisterPage/>}/>
+      <Route path='/contact-us' element={<ContactUs/>}/>
+      <Route path='/about' element={<About/>}/>
+
       <Route path='/view-reports' element={<ProtectedRoutes><ViewReport/></ProtectedRoutes>}/>
 
 

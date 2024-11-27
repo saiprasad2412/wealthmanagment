@@ -49,11 +49,11 @@ const Header = () => {
           <Link to="/" className="hover:text-gray-400">
             Home
           </Link>
-          <Link to="/income" className="hover:text-gray-400">
-            Incomes
+          <Link to="/about" className="hover:text-gray-400">
+            About
           </Link>
-          <Link to="/expense" className="hover:text-gray-400">
-            Expenses
+          <Link to="/contact-us" className="hover:text-gray-400">
+            Contact Us
           </Link>
         </nav>
 

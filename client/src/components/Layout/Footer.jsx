@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
     return (
       <footer className="bg-gray-800 text-white">
@@ -16,9 +18,9 @@ const Footer = () => {
             <a href="#terms" className="hover:text-gray-400 text-sm">
               Terms of Service
             </a>
-            <a href="#contact" className="hover:text-gray-400 text-sm">
+            <Link to="/contact-us" className="hover:text-gray-400 text-sm">
               Contact Us
-            </a>
+            </Link>
           </div>
   
           {/* Right Section - Social Icons */}

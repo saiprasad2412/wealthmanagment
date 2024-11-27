@@ -1,37 +1,82 @@
 import React, { useState, useEffect } from "react";
 import { PieChart, Pie, Cell, Tooltip, Legend } from "recharts";
-import { Button } from "react-bootstrap"; // Using Bootstrap for buttons
+import { Button, Form } from "react-bootstrap"; // Using Bootstrap for buttons
 import Layout from "../components/Layout/Layout";
 import moment from "moment";
 import { getAllTransactionFn } from "../services/transactionServices";
 
 const ViewReport = () => {
   const [transactions, setTransactions] = useState([]);
+  const [filteredTransactions, setFilteredTransactions] = useState([]);
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
   const [view, setView] = useState("table");
+  const [categoryFilter, setCategoryFilter] = useState(""); // Category filter state
+  const [typeFilter, setTypeFilter] = useState(""); // Type filter (income or expense)
+  const [dateFilter, setDateFilter] = useState(""); // Date range filter
+
+  const incomeCategories = ["Salary", "Freelancing", "Investments", "Others"];
+  const expenseCategories = ["Rent", "Groceries", "Entertainment", "Utilities", "Miscellaneous", "Others"];
 
   useEffect(() => {
     const fetchTransactions = async () => {
       const res = await getAllTransactionFn();
       const data = res.data.data || [];
       setTransactions(data);
-
-      // Calculate total income and expense
-      const income = data
-        .filter((transaction) => transaction.type === "income")
-        .reduce((sum, transaction) => sum + transaction.amount, 0);
-
-      const expense = data
-        .filter((transaction) => transaction.type === "expense")
-        .reduce((sum, transaction) => sum + transaction.amount, 0);
-
-      setTotalIncome(income);
-      setTotalExpense(expense);
+      setFilteredTransactions(data);
+      calculateTotals(data);
     };
 
     fetchTransactions();
   }, []);
+
+  const calculateTotals = (data) => {
+    const income = data
+      .filter((transaction) => transaction.type === "income")
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+    const expense = data
+      .filter((transaction) => transaction.type === "expense")
+      .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+    setTotalIncome(income);
+    setTotalExpense(expense);
+  };
+
+  // Filter transactions based on category, type, and date range
+  const applyFilters = () => {
+    let filtered = [...transactions];
+
+    if (categoryFilter) {
+      filtered = filtered.filter(
+        (transaction) => transaction.category === categoryFilter
+      );
+    }
+
+    if (typeFilter) {
+      filtered = filtered.filter((transaction) => transaction.type === typeFilter);
+    }
+
+    if (dateFilter) {
+      filtered = filtered.filter((transaction) => {
+        const transactionDate = moment(transaction.date);
+        return transactionDate.isSameOrAfter(moment(dateFilter).startOf("month")) &&
+               transactionDate.isSameOrBefore(moment(dateFilter).endOf("month"));
+      });
+    }
+
+    setFilteredTransactions(filtered);
+    calculateTotals(filtered);
+  };
+
+  // Clear all filters and reset the data
+  const clearFilters = () => {
+    setCategoryFilter("");
+    setTypeFilter("");
+    setDateFilter("");
+    setFilteredTransactions(transactions); // Reset filtered data to original
+    calculateTotals(transactions); // Recalculate totals for the full data
+  };
 
   // Generate data for pie charts
   const overallPieData = [
@@ -39,7 +84,7 @@ const ViewReport = () => {
     { name: "Expense", value: totalExpense },
   ];
 
-  const incomeCategoryData = transactions
+  const incomeCategoryData = filteredTransactions
     .filter((transaction) => transaction.type === "income")
     .reduce((categories, transaction) => {
       const existingCategory = categories.find(
@@ -53,7 +98,7 @@ const ViewReport = () => {
       return categories;
     }, []);
 
-  const expenseCategoryData = transactions
+  const expenseCategoryData = filteredTransactions
     .filter((transaction) => transaction.type === "expense")
     .reduce((categories, transaction) => {
       const existingCategory = categories.find(
@@ -69,10 +114,68 @@ const ViewReport = () => {
 
   const COLORS = ["#82ca9d", "#ff7300", "#8884d8", "#d0ed57", "#a4de6c"];
 
+  // Determine categories based on typeFilter
+  const getCategoryOptions = () => {
+    if (typeFilter === "income") {
+      return incomeCategories;
+    } else if (typeFilter === "expense") {
+      return expenseCategories;
+    }
+    return []; // Show no categories if no type is selected
+  };
+
   return (
     <Layout>
       <div className="container mx-auto my-8 p-6 bg-gray-50 rounded-lg shadow-lg">
         <h2 className="text-3xl font-semibold text-center mb-6">Transaction Reports</h2>
+
+        {/* Filter UI */}
+        <div className="flex justify-center mb-6 space-x-4">
+          <Form.Control
+            as="select"
+            value={typeFilter}
+            onChange={(e) => {
+              setTypeFilter(e.target.value);
+              setCategoryFilter(""); // Reset category filter when type changes
+            }}
+            className="w-1/4"
+          >
+            <option value="">Select Type</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </Form.Control>
+
+          <Form.Control
+            as="select"
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value)}
+            className="w-1/4"
+            disabled={!typeFilter} // Disable if no type is selected
+          >
+            <option value="">Select Category</option>
+            {getCategoryOptions().map((category, index) => (
+              <option key={index} value={category}>
+                {category}
+              </option>
+            ))}
+          </Form.Control>
+
+          <Form.Control
+            type="month"
+            value={dateFilter}
+            onChange={(e) => setDateFilter(e.target.value)}
+            className="w-1/4"
+          />
+          
+          <Button variant="primary" onClick={applyFilters} className="p-2">
+            Apply Filters
+          </Button>
+
+          {/* Clear Filters Button */}
+          <Button variant="secondary" onClick={clearFilters} className="p-2">
+            Clear Filters
+          </Button>
+        </div>
 
         {/* Toggle Button */}
         <div className="flex justify-center mb-6">
@@ -155,7 +258,7 @@ const ViewReport = () => {
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto bg-white shadow-md rounded-md p-4">
+          <div>
             <h3 className="text-xl font-semibold text-center mb-4">Transaction Details</h3>
             <table className="w-full border-collapse bg-white rounded-md shadow-lg overflow-hidden">
               <thead>
@@ -164,40 +267,26 @@ const ViewReport = () => {
                   <th className="py-3 px-4 text-left">Category</th>
                   <th className="py-3 px-4 text-left">Type</th>
                   <th className="py-3 px-4 text-left">Amount</th>
-                  <th className="py-3 px-4 text-left">Description</th>
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(transactions) && transactions.length > 0 ? (
-                  transactions.map((transaction, index) => (
+                {filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((transaction, index) => (
                     <tr
-                      key={transaction._id}
-                      className={`text-sm ${
-                        index % 2 === 0 ? "bg-gray-50" : "bg-white"
-                      } hover:bg-gray-100`}
+                      key={index}
+                      className={`text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}
                     >
-                      <td className="py-2 px-4 border-b">
-                        {moment(transaction.date).format("DD MMM YYYY")}
-                      </td>
+                      <td className="py-2 px-4 border-b">{moment(transaction.date).format('MMM DD, YYYY')}</td>
                       <td className="py-2 px-4 border-b">{transaction.category}</td>
-                      <td
-                        className={`py-2 px-4 border-b ${
-                          transaction.type === "income"
-                            ? "text-green-500 font-semibold"
-                            : "text-red-500 font-semibold"
-                        }`}
-                      >
+                      <td className={`py-2 px-4 border-b ${transaction.type === 'income' ? 'text-green-500 font-semibold' : 'text-red-500 font-semibold'}`}>
                         {transaction.type}
                       </td>
-                      <td className="py-2 px-4 border-b">{transaction.amount}</td>
-                      <td className="py-2 px-4 border-b">{transaction.description}</td>
+                      <td className="py-2 px-4 border-b">Rs.{transaction.amount}</td>
                     </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="5" className="py-4 text-center text-gray-500">
-                      No transactions available
-                    </td>
+                    <td colSpan="4" className="py-4 text-center text-gray-500">No transactions available</td>
                   </tr>
                 )}
               </tbody>

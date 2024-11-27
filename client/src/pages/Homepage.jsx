@@ -1,12 +1,58 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../components/Layout/Layout";
 import AddTransactionModal from "../modals/AddTransactionModal";
 import { useNavigate } from "react-router-dom";
+import { getAllTransactionFn } from "../services/transactionServices";
 
 const Homepage = () => {
   const [transactionmodalToggle, setTransactionModalToggle] = useState(false);
-  const user = JSON.parse(localStorage.getItem("user")) 
+  const user = JSON.parse(localStorage.getItem("user"));
   const navigate = useNavigate();
+  const [transactions, setTransactions] = useState([]);
+  const [income, setIncome] = useState(0);
+  const [expense, setExpense] = useState(0);
+  const [savings, setSavings] = useState(0);
+
+  // Get current month and year
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      const res = await getAllTransactionFn();
+      const data = res.data.data || [];
+      setTransactions(data);
+
+      // Filter transactions for current month and year
+      const currentMonthTransactions = data.filter((transaction) => {
+        const transactionDate = new Date(transaction.date); // assuming `transaction.date` is in a valid format
+        return (
+          transactionDate.getMonth() === currentMonth &&
+          transactionDate.getFullYear() === currentYear
+        );
+      });
+
+      // Calculate total income and expenses for the current month
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      currentMonthTransactions.forEach((transaction) => {
+        if (transaction.type === "income") {
+          totalIncome += transaction.amount;
+        } else if (transaction.type === "expense") {
+          totalExpense += transaction.amount;
+        }
+      });
+
+      const totalSavings = totalIncome - totalExpense;
+
+      setIncome(totalIncome);
+      setExpense(totalExpense);
+      setSavings(totalSavings);
+    };
+
+    fetchTransactions();
+  }, [currentMonth, currentYear]);
 
   return (
     <Layout>
@@ -24,22 +70,26 @@ const Homepage = () => {
           Financial Overview
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Total Savings */}
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
+          {/* Total Income */}
+          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center">
             <h3 className="text-xl font-semibold mb-4 text-green-500">Total Income</h3>
-            <p className="text-green-600 text-lg">$15,000</p>
+            <p className="text-green-600 text-2xl font-semibold">Rs.{income.toFixed(2)}</p>
           </div>
 
-          {/* Monthly Budget */}
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
+          {/* Total Expense */}
+          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center">
             <h3 className="text-xl font-semibold mb-4 text-red-500">Total Expense</h3>
-            <p className="text-red-600 text-lg">$2,500</p>
+            <p className="text-red-600 text-2xl font-semibold">Rs.{expense.toFixed(2)}</p>
           </div>
 
-          {/* Investments */}
-          <div className="bg-white shadow-lg p-6 rounded-lg text-center">
+          {/* Savings */}
+          <div className="bg-white shadow-xl hover:shadow-2xl transition-all p-6 rounded-lg text-center">
             <h3 className="text-xl font-semibold mb-4 text-indigo-500">Savings</h3>
-            <p className="text-gray-600 text-lg">$8,000</p>
+            <p
+              className={`text-2xl font-semibold ${savings >= 0 ? "text-green-600" : "text-red-600"}`}
+            >
+              Rs.{savings.toFixed(2)}
+            </p>
           </div>
         </div>
       </div>
@@ -50,15 +100,21 @@ const Homepage = () => {
           Quick Actions
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-          <button className="bg-blue-600 text-white py-4 rounded-lg shadow-lg hover:bg-blue-700" onClick={() => setTransactionModalToggle(true)}>
+          <button
+            className="bg-blue-600 text-white py-4 rounded-lg shadow-lg hover:bg-blue-700 hover:shadow-2xl transition-all"
+            onClick={() => setTransactionModalToggle(true)}
+          >
             Add Transaction
           </button>
-          <button className="bg-green-600 text-white py-4 rounded-lg shadow-lg hover:bg-green-700" onClick={()=>{
-            navigate('/view-reports')
-          }}>
+          <button
+            className="bg-green-600 text-white py-4 rounded-lg shadow-lg hover:bg-green-700 hover:shadow-2xl transition-all"
+            onClick={() => {
+              navigate("/view-reports");
+            }}
+          >
             View Reports
           </button>
-          <button className="bg-indigo-600 text-white py-4 rounded-lg shadow-lg hover:bg-indigo-700">
+          <button className="bg-indigo-600 text-white py-4 rounded-lg shadow-lg hover:bg-indigo-700 hover:shadow-2xl transition-all">
             Manage Investments
           </button>
         </div>
@@ -71,12 +127,18 @@ const Homepage = () => {
             localStorage.removeItem("user");
             window.location.href = "/login";
           }}
-          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700"
+          className="bg-red-600 text-white py-2 px-6 rounded-lg shadow hover:bg-red-700 transition-all"
         >
           Logout
         </button>
       </div>
-      {transactionmodalToggle && <AddTransactionModal isOpen={transactionmodalToggle} onClose={() => setTransactionModalToggle(false)}/>}
+
+      {transactionmodalToggle && (
+        <AddTransactionModal
+          isOpen={transactionmodalToggle}
+          onClose={() => setTransactionModalToggle(false)}
+        />
+      )}
     </Layout>
   );
 };
