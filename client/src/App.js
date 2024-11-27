@@ -6,9 +6,21 @@ import RegisterPage from './pages/RegisterPage'
 import ViewReport from './pages/ViewReport'
 import ContactUs from './pages/ContactUs'
 import About from './pages/About'
+import { ToastContainer } from 'react-toastify'
 const App = () => {
   return (
     <>
+    <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
     <Routes>
       <Route path='/' element={<ProtectedRoutes><Homepage/></ProtectedRoutes>}/>
       <Route path='/login' element={<LoginPage/>}/>

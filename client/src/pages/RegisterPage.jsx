@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { registerFn } from "../services/userServices"; 
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { registerFn } from "../services/userServices";
+import { toast } from "react-toastify";
 import { Link, useNavigate } from "react-router-dom";
 
 const RegisterPage = () => {
   const [error, setError] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   // Yup validation schema
   const validationSchema = Yup.object({
@@ -18,14 +17,11 @@ const RegisterPage = () => {
   });
 
   const handleRegister = async (values) => {
-    console.log('Values:', values);
-
     try {
-      const res = await registerFn(values); 
+      const res = await registerFn(values);
       if (res.success) {
         toast.success("Registration successful!");
-        navigate('/login');
-        
+        navigate("/login")
       } else {
         setError(res.message || "Something went wrong");
         toast.error(res.message || "Registration failed");
@@ -36,10 +32,13 @@ const RegisterPage = () => {
       toast.error("An error occurred while registering");
     }
   };
-  //check if user already present in localstorage 
-  useEffect(()=>{
-    if(localStorage.getItem('user')){navigate('/')};
-  },[navigate])
+
+  // Redirect if user already logged in
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      navigate("/");
+    }
+  }, [navigate]);
 
   return (
     <div className="flex justify-center items-center h-screen bg-gradient-to-r from-green-500 to-blue-600">
@@ -67,11 +66,7 @@ const RegisterPage = () => {
                   className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Enter your name"
                 />
-                <ErrorMessage
-                  name="name"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
+                <ErrorMessage name="name" component="div" className="text-red-500 text-sm mt-1" />
               </div>
 
               {/* Email Field */}
@@ -84,11 +79,7 @@ const RegisterPage = () => {
                   className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Enter your email"
                 />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
+                <ErrorMessage name="email" component="div" className="text-red-500 text-sm mt-1" />
               </div>
 
               {/* Password Field */}
@@ -101,17 +92,13 @@ const RegisterPage = () => {
                   className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Enter your password"
                 />
-                <ErrorMessage
-                  name="password"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
-                />
+                <ErrorMessage name="password" component="div" className="text-red-500 text-sm mt-1" />
               </div>
+
               <div className="flex items-center justify-between">
-              <Link  to="/login" className="text-sm text-blue-600 hover:text-blue-800 text-wrap mr-2">
-                Already have an account ? 
+                <Link to="/login" className="text-sm text-blue-600 hover:text-blue-800">
+                  Already have an account?
                 </Link>
-                
               </div>
 
               <div>
@@ -127,8 +114,6 @@ const RegisterPage = () => {
           )}
         </Formik>
       </div>
-      <ToastContainer position="bottom-center" />
-
     </div>
   );
 };

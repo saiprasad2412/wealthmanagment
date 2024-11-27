@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { addTransactionFn } from "../services/transactionServices";
 
-const AddTransactionModal = ({ isOpen, onClose }) => {
+const AddTransactionModal = ({ isOpen, onClose,onAddTransaction }) => {
   const [transactionType, setTransactionType] = useState("");
 
   if (!isOpen) return null;
@@ -29,6 +29,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
       const dd= addTransactionFn(values).then((res)=>{
         console.log('ressss',res);
         if(res.data.success){
+          onAddTransaction();
           toast.success("Transaction added successfully!");
           resetForm();
           onClose();
@@ -177,7 +178,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
             </Form>
           )}
         </Formik>
-        <ToastContainer position="bottom-center" />
+        {/* <ToastContainer position="bottom-center" /> */}
       </div>
     </div>
   );

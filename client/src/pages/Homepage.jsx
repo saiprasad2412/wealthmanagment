@@ -18,41 +18,42 @@ const Homepage = () => {
   const currentYear = new Date().getFullYear();
 
   useEffect(() => {
-    const fetchTransactions = async () => {
-      const res = await getAllTransactionFn();
-      const data = res.data.data || [];
-      setTransactions(data);
-
-      // Filter transactions for current month and year
-      const currentMonthTransactions = data.filter((transaction) => {
-        const transactionDate = new Date(transaction.date); // assuming `transaction.date` is in a valid format
-        return (
-          transactionDate.getMonth() === currentMonth &&
-          transactionDate.getFullYear() === currentYear
-        );
-      });
-
-      // Calculate total income and expenses for the current month
-      let totalIncome = 0;
-      let totalExpense = 0;
-
-      currentMonthTransactions.forEach((transaction) => {
-        if (transaction.type === "income") {
-          totalIncome += transaction.amount;
-        } else if (transaction.type === "expense") {
-          totalExpense += transaction.amount;
-        }
-      });
-
-      const totalSavings = totalIncome - totalExpense;
-
-      setIncome(totalIncome);
-      setExpense(totalExpense);
-      setSavings(totalSavings);
-    };
+    
 
     fetchTransactions();
   }, [currentMonth, currentYear]);
+  const fetchTransactions = async () => {
+    const res = await getAllTransactionFn();
+    const data = res.data.data || [];
+    setTransactions(data);
+
+    // Filter transactions for current month and year
+    const currentMonthTransactions = data.filter((transaction) => {
+      const transactionDate = new Date(transaction.date); // assuming `transaction.date` is in a valid format
+      return (
+        transactionDate.getMonth() === currentMonth &&
+        transactionDate.getFullYear() === currentYear
+      );
+    });
+
+    // Calculate total income and expenses for the current month
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    currentMonthTransactions.forEach((transaction) => {
+      if (transaction.type === "income") {
+        totalIncome += transaction.amount;
+      } else if (transaction.type === "expense") {
+        totalExpense += transaction.amount;
+      }
+    });
+
+    const totalSavings = totalIncome - totalExpense;
+
+    setIncome(totalIncome);
+    setExpense(totalExpense);
+    setSavings(totalSavings);
+  };
 
   return (
     <Layout>
@@ -137,6 +138,7 @@ const Homepage = () => {
         <AddTransactionModal
           isOpen={transactionmodalToggle}
           onClose={() => setTransactionModalToggle(false)}
+          onAddTransaction={fetchTransactions}
         />
       )}
     </Layout>
