@@ -15,21 +15,21 @@ const ContactUs = () => {
           {/* Email */}
           <div className="mb-4">
             <p className="text-xl font-semibold">Email:</p>
-            <p className="text-lg text-blue-500">contact@yourcompany.com</p>
+            <p className="text-lg text-blue-500">manesaiprasad2412@gmail.com</p>
           </div>
 
           {/* Social Media Links */}
           <div className="flex justify-center space-x-6">
-            <a href="https://www.facebook.com/yourcompany" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer">
               <FaFacebook className="text-3xl text-blue-600 hover:text-blue-800" />
             </a>
-            <a href="https://twitter.com/yourcompany" target="_blank" rel="noopener noreferrer">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
               <FaTwitter className="text-3xl text-blue-400 hover:text-blue-600" />
             </a>
-            <a href="https://www.linkedin.com/company/yourcompany" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.linkedin.com/in/saiprasad-mane-24122001/" target="_blank" rel="noopener noreferrer">
               <FaLinkedin className="text-3xl text-blue-700 hover:text-blue-900" />
             </a>
-            <a href="https://www.instagram.com/yourcompany" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer">
               <FaInstagram className="text-3xl text-pink-500 hover:text-pink-700" />
             </a>
           </div>
