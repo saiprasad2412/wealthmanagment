@@ -50,51 +50,56 @@ const ViewReport = () => {
 
         {/* Conditional Rendering: Pie Chart or Table */}
         {view === "pie" ? (
-          <div className="mb-8">
-            <h3 className="text-xl font-semibold text-center mb-4">Income vs Expense</h3>
-            <PieChart width={400} height={400}>
-              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={150} fill="#8884d8">
-                <Cell key="Income" fill="#82ca9d" />
-                <Cell key="Expense" fill="#ff7300" />
-              </Pie>
-              <Tooltip />
-              <Legend />
-            </PieChart>
-          </div>
-        ) : (
-          <div className="overflow-x-auto bg-white shadow-md rounded-md p-4">
-            <h3 className="text-xl font-semibold text-center mb-4">Transaction Details</h3>
-            <table className="w-full table-auto border-collapse">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b text-left">Date</th>
-                  <th className="py-2 px-4 border-b text-left">Category</th>
-                  <th className="py-2 px-4 border-b text-left">Type</th>
-                  <th className="py-2 px-4 border-b text-left">Amount</th>
-                  <th className="py-2 px-4 border-b text-left">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-              {Array.isArray(transactions) && transactions.length > 0 ? (
-            transactions.map((transaction) => (
-              <tr key={transaction._id}>
-                <td>{moment(transaction.date).format('DD MMM YYYY')}</td>
-
-                <td>{transaction.category}</td>
-                <td>{transaction.type}</td>
-                <td>{transaction.amount}</td>
-                <td>{transaction.description}</td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan="4">No transactions available</td>
+  <div className="mb-8">
+    <h3 className="text-xl font-semibold text-center mb-4">Income vs Expense</h3>
+    <PieChart width={400} height={400}>
+      <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={150} fill="#8884d8">
+        <Cell key="Income" fill="#82ca9d" />
+        <Cell key="Expense" fill="#ff7300" />
+      </Pie>
+      <Tooltip />
+      <Legend />
+    </PieChart>
+  </div>
+) : (
+  <div className="overflow-x-auto bg-white shadow-md rounded-md p-4">
+    <h3 className="text-xl font-semibold text-center mb-4">Transaction Details</h3>
+    <table className="w-full border-collapse bg-white rounded-md shadow-lg overflow-hidden">
+      <thead>
+        <tr className="bg-blue-500 text-white uppercase text-sm font-semibold">
+          <th className="py-3 px-4 text-left">Date</th>
+          <th className="py-3 px-4 text-left">Category</th>
+          <th className="py-3 px-4 text-left">Type</th>
+          <th className="py-3 px-4 text-left">Amount</th>
+          <th className="py-3 px-4 text-left">Description</th>
+        </tr>
+      </thead>
+      <tbody>
+        {Array.isArray(transactions) && transactions.length > 0 ? (
+          transactions.map((transaction, index) => (
+            <tr 
+              key={transaction._id} 
+              className={`text-sm ${index % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-gray-100`}
+            >
+              <td className="py-2 px-4 border-b">{moment(transaction.date).format('DD MMM YYYY')}</td>
+              <td className="py-2 px-4 border-b">{transaction.category}</td>
+              <td className={`py-2 px-4 border-b ${transaction.type === 'income' ? 'text-green-500 font-semibold' : 'text-red-500 font-semibold'}`}>
+                {transaction.type}
+              </td>
+              <td className="py-2 px-4 border-b">{transaction.amount}</td>
+              <td className="py-2 px-4 border-b">{transaction.description}</td>
             </tr>
-          )}
-              </tbody>
-            </table>
-          </div>
+          ))
+        ) : (
+          <tr>
+            <td colSpan="5" className="py-4 text-center text-gray-500">No transactions available</td>
+          </tr>
         )}
+      </tbody>
+    </table>
+  </div>
+)}
+
       </div>
     </Layout>
   );

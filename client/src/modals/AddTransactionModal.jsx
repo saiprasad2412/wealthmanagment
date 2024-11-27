@@ -28,7 +28,7 @@ const AddTransactionModal = ({ isOpen, onClose }) => {
       console.log("Transaction Details:", values);
       const dd= addTransactionFn(values).then((res)=>{
         console.log('ressss',res);
-        if(res.success){
+        if(res.data.success){
           toast.success("Transaction added successfully!");
           resetForm();
           onClose();

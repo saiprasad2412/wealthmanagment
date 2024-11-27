@@ -23,7 +23,12 @@ const transactionSchema= new mongoose.Schema({
     date: {
         type: Date,
         required: true
-    }
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User', 
+        required: [true, "Users is required"], 
+    },
 },{timestamps: true})
 
 const transactionModel= mongoose.model('Transaction', transactionSchema);

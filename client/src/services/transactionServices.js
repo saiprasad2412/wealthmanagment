@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const addTransactionFn=async(payload)=>{
     try {
-        const res= await axios.post('http://localhost:8080/api/v1/transactions/add-transaction',payload);
+        const res= await axios.post('http://localhost:8080/api/v1/transactions/add-transaction',payload,{ withCredentials: true } );
         return res;
         
     } catch (error) {
@@ -14,7 +14,7 @@ export const addTransactionFn=async(payload)=>{
 
 export const getAllTransactionFn=async()=>{
     try {
-        const res= await axios.get('http://localhost:8080/api/v1/transactions/get-transactions');
+        const res= await axios.get('http://localhost:8080/api/v1/transactions/get-transactions',{ withCredentials: true } );
         return res;
         
     } catch (error) {

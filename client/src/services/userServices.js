@@ -1,7 +1,7 @@
 import axios from 'axios'
 export const loginFn=async(payload)=>{
     try {
-        const res=await axios.post('http://localhost:8080/api/v1/auth/login',payload);
+        const res=await axios.post('http://localhost:8080/api/v1/auth/login',payload,{ withCredentials: true });
         return res.data;
         
     } catch (error) {

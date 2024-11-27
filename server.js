@@ -3,6 +3,7 @@ const cors=require('cors');
 const morgan=require('morgan');
 const dotenv=require('dotenv');
 const connectDb = require('./config/index.js');
+const cookieParser = require('cookie-parser');
 const app= express();
 
 //config dotenv file
@@ -11,8 +12,13 @@ dotenv.config();
 //database connection
 connectDb();
 //middleware
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors())
+app.use(
+    cors({
+        origin: "http://localhost:3001",
+        credentials: true, 
+    }))
 app.use(morgan('dev'));
 
 //routes
